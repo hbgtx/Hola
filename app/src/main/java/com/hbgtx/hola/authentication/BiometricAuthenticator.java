@@ -45,9 +45,9 @@ public class BiometricAuthenticator {
                         .show();
             }
         });
-
+        //TODO: set listener for negative button.
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Biometric login for my app")
+                .setTitle("Authenticate to open Hola!")
                 .setSubtitle("Log in using your biometric credential")
                 .setNegativeButtonText("Use account password")
                 .build();
