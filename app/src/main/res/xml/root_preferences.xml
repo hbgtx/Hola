@@ -18,7 +18,9 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/authentication_header">
+    <PreferenceCategory
+        app:key="@string/authentication_header_key"
+        app:title="@string/authentication_header">
 
         <SwitchPreferenceCompat
             app:key="@string/biometric_key"

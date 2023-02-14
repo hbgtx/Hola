@@ -8,6 +8,7 @@
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="authentication_header">Authentication</string>
+    <string name="authentication_header_key">Authentication_key</string>
 
     <!-- Authentication Preferences -->
     <string name="biometric_title">Use Fingerprint</string>

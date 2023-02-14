@@ -6,13 +6,13 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.hbgtx.hola.R;
+import com.hbgtx.hola.authentication.BiometricAuthenticator;
 
 public class SettingsActivity extends AppCompatActivity {
-
-    private static final int REQUEST_CODE = 9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
     }
 
     @Override
@@ -39,9 +40,17 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
+
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+            BiometricAuthenticator biometricAuthenticator = new BiometricAuthenticator(getContext());
+            if (!biometricAuthenticator.canAuthenticate()) {
+                Preference biometricPreference = findPreference(getString(R.string.authentication_header_key));
+                if (biometricPreference != null) {
+                    biometricPreference.setVisible(false);
+                }
+            }
 
         }
 
