@@ -2,9 +2,9 @@ package com.hbgtx.hola.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.hbgtx.hola.R;
 import com.hbgtx.hola.authentication.BiometricAuthenticator;
@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_activity_toolbar);
+        setSupportActionBar(toolbar);
         sharedPrefUtil = new SharedPrefUtil(this);
         biometricAuthenticator = new BiometricAuthenticator(this);
         findViewById(R.id.settings_button).setOnClickListener(view -> {
