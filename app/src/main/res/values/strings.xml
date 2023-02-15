@@ -19,6 +19,7 @@
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
+    <string name="person_name">Person name</string>
 
     <!-- Sync Preferences -->
 </resources>
