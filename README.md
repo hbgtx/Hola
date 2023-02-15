@@ -1,4 +1,4 @@
 # Hola (Chat App)
 
 ## Screenshots:
-![](./screenshots/Screenshot_main_activity.png)
+<img src="./screenshots/Screenshot_main_activity.png" align="left" height="1000" width="450" >
