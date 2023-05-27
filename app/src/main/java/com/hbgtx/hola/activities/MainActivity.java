@@ -1,5 +1,7 @@
 package com.hbgtx.hola.activities;
 
+import static com.hbgtx.hola.R.id.action_settings;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hbgtx.hola.R;
 import com.hbgtx.hola.adapter.ChatListAdapter;
 import com.hbgtx.hola.authentication.BiometricAuthenticator;
+import com.hbgtx.hola.managers.ConnectionManager;
 import com.hbgtx.hola.model.ChatItem;
 import com.hbgtx.hola.utils.SharedPrefUtil;
 
@@ -23,18 +26,15 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SharedPrefUtil sharedPrefUtil;
-    private BiometricAuthenticator biometricAuthenticator;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_activity_toolbar);
         setSupportActionBar(toolbar);
-        sharedPrefUtil = new SharedPrefUtil(this);
-        biometricAuthenticator = new BiometricAuthenticator(this);
-        if (sharedPrefUtil != null && sharedPrefUtil.isBiometricEnabled()) {
+        SharedPrefUtil sharedPrefUtil = new SharedPrefUtil(this);
+        BiometricAuthenticator biometricAuthenticator = new BiometricAuthenticator(this);
+        if (sharedPrefUtil.isBiometricEnabled()) {
             biometricAuthenticator.authenticate();
         }
 
@@ -50,14 +50,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == action_settings) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isTaskRoot()) {
+            ConnectionManager.getInstance().stopListening();
         }
     }
 

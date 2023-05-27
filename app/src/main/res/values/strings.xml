@@ -5,6 +5,7 @@
     <!--Button texts-->
     <string name="settings_activity_title">Settings</string>
     <string name="setting_text">Settings</string>
+    <string name="login_text">Login</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -21,5 +22,7 @@
     <string name="reply_title">Default reply action</string>
     <string name="person_name">Person name</string>
 
-    <!-- Sync Preferences -->
+    <!-- Constants -->
+    <string name="user_name">Username:</string>
+    <string name="enter_user_name_hint">Enter username here:</string>
 </resources>
