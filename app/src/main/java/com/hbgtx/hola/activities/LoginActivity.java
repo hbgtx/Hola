@@ -1,5 +1,7 @@
 package com.hbgtx.hola.activities;
 
+import static com.hbgtx.hola.utils.Util.isValidUserId;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -10,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.hbgtx.hola.R;
 import com.hbgtx.hola.callbacks.LoginCallback;
+import com.hbgtx.hola.listeners.MessageListener;
 import com.hbgtx.hola.managers.ConnectionManager;
 import com.hbgtx.hola.model.EntityId;
 import com.hbgtx.hola.utils.SharedPrefUtil;
@@ -23,6 +26,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ConnectionManager.destroyInstance();
+        MessageListener.destroyInstance();
         connectionManager = ConnectionManager.getInstance();
         userIdText = (EditText) findViewById(R.id.edit_text_user_id);
         loginButton = (Button) findViewById(R.id.login_btn);
@@ -57,19 +62,5 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         });
-    }
-
-    private boolean isValidUserId(String userId) {
-        return userId != null && userId.length() >= 3;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (isTaskRoot()) {
-            if (connectionManager != null) {
-                connectionManager.stopListening();
-            }
-        }
     }
 }

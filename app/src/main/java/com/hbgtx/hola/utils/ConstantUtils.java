@@ -1,5 +1,7 @@
 package com.hbgtx.hola.utils;
 
+import com.hbgtx.hola.model.Message;
+
 public class ConstantUtils {
     public static final String SERVER_IP_ADDRESS = "192.168.178.148";
     public static final int DEFAULT_PORT = 8080;

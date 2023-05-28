@@ -2,10 +2,10 @@ package com.hbgtx.hola.handlers;
 
 import com.hbgtx.hola.model.Message;
 
-public class MessageHandler extends BaseMessageHandler{
+public class MessageHandler extends BaseMessageHandler {
 
     @Override
-    boolean handleMessage(Message message) {
+    public boolean handleMessage(Message message) {
         switch (message.getMessageType()) {
             case CHAT_MESSAGE:
                 return handleChatMessage(message);
@@ -27,22 +27,22 @@ public class MessageHandler extends BaseMessageHandler{
     }
 
     private boolean handleAckMessage(Message message) {
-        System.out.println("handle chat message:" + message);
+        System.out.println("handle ack message:" + message);
         return true;
     }
 
     private boolean handleTypingMessage(Message message) {
-        System.out.println("handle chat message:" + message);
+        System.out.println("handle typing message:" + message);
         return true;
     }
 
     private boolean handleInfoMessage(Message message) {
-        System.out.println("handle chat message:" + message);
+        System.out.println("handle info message:" + message);
         return true;
     }
 
     private boolean handleRequestMessage(Message message) {
-        System.out.println("handle chat message:" + message);
+        System.out.println("handle request message:" + message);
         return true;
     }
 

@@ -14,16 +14,29 @@
         android:layout_margin="2dp"
         android:src="@mipmap/ic_launcher" />
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <TextView
         android:id="@+id/tv_chat_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="10sp"
+        android:maxLines="1"
+        android:text="@string/person_name"
+        android:textSize="24sp"
+        android:ellipsize="end"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/tv_chat_item_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:maxLines="1"
         android:text="@string/person_name"
         android:textSize="16sp"
         android:ellipsize="end"
-        android:textStyle="bold" />
-
+        android:textStyle="normal" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

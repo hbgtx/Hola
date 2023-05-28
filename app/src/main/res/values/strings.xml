@@ -6,6 +6,7 @@
     <string name="settings_activity_title">Settings</string>
     <string name="setting_text">Settings</string>
     <string name="login_text">Login</string>
+    <string name="send_message_text">Send message</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -25,4 +26,6 @@
     <!-- Constants -->
     <string name="user_name">Username:</string>
     <string name="enter_user_name_hint">Enter username here:</string>
+    <string name="enter_receiver_hint">Send Message to:</string>
+    <string name="enter_message_hint">Enter Message here:</string>
 </resources>

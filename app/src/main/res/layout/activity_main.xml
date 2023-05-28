@@ -7,6 +7,7 @@
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_activity_toolbar"
         android:layout_width="match_parent"
@@ -17,11 +18,48 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@color/white" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_chat_list"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="0dp" />
+        android:padding="16dp">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chat_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/chat_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/rv_chat_list"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edit_text_receiver_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_receiver_hint"
+                android:importantForAutofill="no"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/edit_text_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_message_hint"
+                android:importantForAutofill="no"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/btn_send_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/send_message_text" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </RelativeLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

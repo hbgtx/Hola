@@ -9,6 +9,7 @@ import static com.hbgtx.hola.utils.ConstantUtils.SERVER_IP_ADDRESS;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.hbgtx.hola.callbacks.LoginCallback;
 import com.hbgtx.hola.model.EntityId;
 import com.hbgtx.hola.model.Message;
@@ -25,11 +26,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConnectionManager {
     private static final String USER_ID_REQUEST = "request_user_id";
-    private static ConnectionManager connectionManager;
     private static final AtomicBoolean keepRunning = new AtomicBoolean(true);
+    private static ConnectionManager connectionManager;
     private Socket socket;
     private PrintWriter out;
     private boolean userIdReceived = false;
+    private String receivedUserId;
 
     private ConnectionManager() {
 
@@ -42,11 +44,27 @@ public class ConnectionManager {
         return connectionManager = new ConnectionManager();
     }
 
+    public static void destroyInstance() {
+        connectionManager = null;
+    }
+
+    public boolean isUserIdReceived() {
+        return userIdReceived;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
     public void tryLogin(EntityId userId, LoginCallback loginCallback) {
         new Thread(() -> tryRegisteringUser(userId, loginCallback)).start();
     }
 
     private void tryRegisteringUser(EntityId userId, LoginCallback loginCallback) {
+        if (userIdReceived) {
+            loginCallback.onSuccessfulLogin(new EntityId(receivedUserId));
+            return;
+        }
         keepRunning.set(true);
         setupTimeout();
         try {
@@ -57,9 +75,16 @@ public class ConnectionManager {
             String inputLine;
             int readResult;
             while (keepRunning.get() && (readResult = in.read()) != -1) {
-                inputLine = (char) readResult + in.readLine();
+                inputLine = ((char) readResult) + in.readLine();
                 System.out.println("Message Received from server:" + inputLine);
-                JsonObject messageJson = (JsonObject) JsonParser.parseString(inputLine);
+                System.out.println("Message char from server:" + (char)readResult);
+                JsonObject messageJson;
+                try {
+                    messageJson = (JsonObject) JsonParser.parseString(inputLine);
+                } catch (JsonSyntaxException e) {
+                    System.out.println("Invalid json message");
+                    continue;
+                }
                 if (messageJson != null) {
 
                     if (messageJson.has("request")) {
@@ -75,7 +100,7 @@ public class ConnectionManager {
                             JsonObject messageContent = (JsonObject) JsonParser.parseString(message.getMessageContent().getContent());
                             String info = messageContent.get(KEY_MESSAGE_CONTENT_INFO).getAsString();
                             if (info.equals(MESSAGE_USER_ID_RECEIVED)) {
-                                String receivedUserId = messageContent.get(KEY_MESSAGE_EXTRA).getAsString();
+                                receivedUserId = messageContent.get(KEY_MESSAGE_EXTRA).getAsString();
                                 if (receivedUserId.equals(userId.getId())) {
                                     userIdReceived = true;
                                     loginCallback.onSuccessfulLogin(new EntityId(receivedUserId));
@@ -89,11 +114,10 @@ public class ConnectionManager {
                     }
                 }
             }
-            if (!keepRunning.get()) {
-                loginCallback.onLoginFailure("Server Timeout while trying to login.");
-            }
+            loginCallback.onLoginFailure("Server Timeout while trying to login.");
             System.out.println("End reached");
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("IO exception while trying to login");
             loginCallback.onLoginFailure("Cannot connect to server.");
         }
@@ -101,7 +125,11 @@ public class ConnectionManager {
 
     private void setupTimeout() {
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-        executorService.schedule(this::stopListening, 2000, TimeUnit.MILLISECONDS);
+        executorService.schedule(() -> {
+            if (!userIdReceived) {
+               stopListening();
+            }
+        }, 2000, TimeUnit.MILLISECONDS);
     }
 
     private void sendUserIdWithRetries(EntityId userId) {
@@ -109,16 +137,16 @@ public class ConnectionManager {
     }
 
     public void stopListening() {
-        try {
-            keepRunning.set(false);
-            userIdReceived = false;
-            if (socket != null) {
+        keepRunning.set(false);
+        if (socket != null) {
+            try {
                 socket.close();
+            } catch (IOException e) {
+                System.out.println("Excpetion while closing socket");
+                e.printStackTrace();
             }
-            System.out.println("Socket closed");
-        } catch (IOException e) {
-            System.out.println("Exception while closing the socket");
         }
+        System.out.println("Connection manager stopped listening");
     }
 
     private void sendUserId(EntityId userId) {
@@ -127,6 +155,19 @@ public class ConnectionManager {
             userIdObject.addProperty(KEY_USER_ID, userId.getId());
             out.println(userIdObject);
         }
+    }
+
+    public boolean sendMessage(Message message) {
+        System.out.println("Sending message: " + message);
+        try {
+            socket.sendUrgentData(1);
+            out.println(message.toString());
+            return true;
+        } catch (IOException e) {
+            System.out.println("Exception while sending data");
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private class UserIdSender extends Thread {
